@@ -5445,19 +5445,13 @@ fn good_jobs() {
 #[cargo_test]
 fn invalid_cargo_config_jobs() {
     let p = project()
-        .file("src/lib.rs", "")
-        .file(
-            ".cargo/config",
-            r#"
-                [build]
-                jobs = 0
-            "#,
-        )
+        .file("Cargo.toml", &basic_bin_manifest("foo"))
+        .file("src/foo.rs", &main_file(r#""i am foo""#, &[]))
         .build();
-    p.cargo("build -v")
-        .with_status(101)
-        .with_stderr_contains("error: jobs may not be 0")
-        .run();
+
+    p.cargo("build --jobs 1").run();
+
+    p.cargo("build --jobs -1").run();
 }
 
 #[cargo_test]
