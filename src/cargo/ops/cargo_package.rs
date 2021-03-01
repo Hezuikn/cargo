@@ -30,9 +30,9 @@ pub struct PackageOpts<'cfg> {
     pub check_metadata: bool,
     pub allow_dirty: bool,
     pub verify: bool,
-    pub jobs: Option<u32>,
     pub keep_going: bool,
     pub to_package: ops::Packages,
+    pub jobs: Option<i32>,
     pub targets: Vec<String>,
     pub cli_features: CliFeatures,
 }

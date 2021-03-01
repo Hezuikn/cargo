@@ -631,8 +631,13 @@ impl<'a, 'cfg> Context<'a, 'cfg> {
     }
 
     pub fn new_jobserver(&mut self) -> CargoResult<Client> {
+<<<<<<< HEAD
         let tokens = self.bcx.build_config.jobs as usize;
         let client = Client::new(tokens).with_context(|| "failed to create jobserver")?;
+=======
+        let tokens = self.bcx.jobs() as usize;
+        let client = Client::new(tokens).chain_err(|| "failed to create jobserver")?;
+>>>>>>> 07cc897a4 (Added support for negative --jobs parameter, counting backwards from max CPUs.)
 
         // Drain the client fully
         for i in 0..tokens {
