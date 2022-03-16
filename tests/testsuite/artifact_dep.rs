@@ -1385,10 +1385,6 @@ fn profile_override_basic() {
         .run();
 }
 
-// TODO: replace profile_override_basic() with this test if it fixes msvc issues.
-//       Answer: it doesn't as it's a race of the same dep being built twice, in parallel.
-//       This needs a fix on scheduler level or maybe fixes itself once we uplift binaries.
-//       But probably not as the scheduling problem and similar file paths still remains an issue.
 #[cargo_test]
 fn profile_override_basic_multidep() {
     let p = project()
@@ -1404,8 +1400,7 @@ fn profile_override_basic_multidep() {
                 bar = { path = "bar", artifact = "bin" }
                 
                 [dependencies]
-                # renamed just to avoid collisions on MSVC
-                bardep = { package = "bar", path = "bar", artifact = "bin" }
+                bar = { path = "bar", artifact = "bin" }
                 
                 [profile.dev.build-override]
                 opt-level = 1
