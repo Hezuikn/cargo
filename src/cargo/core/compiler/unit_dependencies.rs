@@ -737,11 +737,6 @@ fn compute_deps_doc(
     // Add all units being scraped for examples as a dependency of Doc units.
     if state.ws.is_member(&unit.pkg) {
         for scrape_unit in state.scrape_units.iter() {
-            // This needs to match the FeaturesFor used in cargo_compile::generate_targets.
-            let unit_for = UnitFor::new_host(
-                scrape_unit.target.proc_macro(),
-                unit_for.root_compile_kind(),
-            );
             deps_of(scrape_unit, state, unit_for)?;
             ret.extend(new_unit_deps(
                 state,
