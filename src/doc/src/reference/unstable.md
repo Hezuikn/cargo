@@ -438,7 +438,7 @@ like to stabilize it somehow!
 [rust-lang/rust#64158]: https://github.com/rust-lang/rust/pull/64158
 
 ### keep-going
-* Tracking Issue: [#0](https://github.com/rust-lang/cargo/issues/10496)
+* Tracking Issue: [#10496](https://github.com/rust-lang/cargo/issues/10496)
 
 `cargo build --keep-going` (and similarly for `check`, `test` etc) will build as
 many crates in the dependency graph as possible, rather than aborting the build
