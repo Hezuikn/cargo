@@ -1354,7 +1354,6 @@ The `--crate-type` flag for `cargo rustc` has been stabilized in the 1.64
 release. See the [`cargo rustc` documentation](../commands/cargo-rustc.md)
 for more information.
 
-
 ### Workspace Inheritance
 
 Workspace Inheritance has been stabilized in the 1.64 release.
