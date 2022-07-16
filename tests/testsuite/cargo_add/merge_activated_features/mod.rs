@@ -11,6 +11,7 @@ fn merge_activated_features() {
     let cwd = &project_root;
 
     snapbox::cmd::Command::cargo_ui()
+        .masquerade_as_nightly_cargo(&["zworkspace-inheritance"])
         .arg("add")
         .args(["foo", "-p", "bar"])
         .current_dir(cwd)

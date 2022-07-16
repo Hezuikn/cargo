@@ -19,6 +19,7 @@ fn simple_build() {
         .arg(&t1)
         .arg("--target")
         .arg(&t2)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .run();
 
     assert!(p.target_bin(t1, "foo").is_file());
@@ -46,7 +47,9 @@ fn simple_build_with_config() {
         )
         .build();
 
-    p.cargo("build").run();
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["multitarget"])
+        .run();
 
     assert!(p.target_bin(t1, "foo").is_file());
     assert!(p.target_bin(t2, "foo").is_file());
@@ -69,6 +72,7 @@ fn simple_test() {
         .arg(&t1)
         .arg("--target")
         .arg(&t2)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .with_stderr_contains(&format!("[RUNNING] [..]{}[..]", t1))
         .with_stderr_contains(&format!("[RUNNING] [..]{}[..]", t2))
         .run();
@@ -84,6 +88,7 @@ fn simple_run() {
     p.cargo("run --target a --target b")
         .with_stderr("[ERROR] only one `--target` argument is supported")
         .with_status(101)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .run();
 }
 
@@ -104,6 +109,7 @@ fn simple_doc() {
         .arg(&t1)
         .arg("--target")
         .arg(&t2)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .run();
 
     assert!(p.build_dir().join(&t1).join("doc/foo/index.html").is_file());
@@ -127,6 +133,7 @@ fn simple_check() {
         .arg(&t1)
         .arg("--target")
         .arg(&t2)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .run();
 }
 
@@ -146,6 +153,7 @@ fn same_value_twice() {
         .arg(&t)
         .arg("--target")
         .arg(&t)
+        .masquerade_as_nightly_cargo(&["multitarget"])
         .run();
 
     assert!(p.target_bin(t, "foo").is_file());
@@ -171,7 +179,9 @@ fn same_value_twice_with_config() {
         )
         .build();
 
-    p.cargo("build").run();
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["multitarget"])
+        .run();
 
     assert!(p.target_bin(t, "foo").is_file());
 }
@@ -196,7 +206,9 @@ fn works_with_config_in_both_string_or_list() {
         )
         .build();
 
-    p.cargo("build").run();
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["multitarget"])
+        .run();
 
     assert!(p.target_bin(t, "foo").is_file());
 
@@ -212,7 +224,9 @@ fn works_with_config_in_both_string_or_list() {
         ),
     );
 
-    p.cargo("build").run();
+    p.cargo("build")
+        .masquerade_as_nightly_cargo(&["multitarget"])
+        .run();
 
     assert!(p.target_bin(t, "foo").is_file());
 }

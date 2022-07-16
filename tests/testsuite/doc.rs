@@ -2627,7 +2627,7 @@ fn scrape_examples_configure_profile() {
         .build();
 
     p.cargo("doc -Zunstable-options -Z rustdoc-scrape-examples=all")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["rustdoc-scrape-examples"])
         .run();
 
     let doc_html = p.read_file("target/doc/foo/fn.foo.html");
@@ -2683,7 +2683,7 @@ fn scrape_examples_issue_10545() {
         .build();
 
     p.cargo("doc -Zunstable-options -Z rustdoc-scrape-examples=all")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["rustdoc-scrape-examples"])
         .run();
 }
 
