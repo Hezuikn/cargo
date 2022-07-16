@@ -31,7 +31,7 @@ fn check_with_invalid_artifact_dependency() {
         .file("bar/src/lib.rs", "")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [ERROR] failed to parse manifest at `[..]/Cargo.toml`
@@ -50,7 +50,7 @@ Caused by:
     ) {
         assert(
             p.cargo(&format!("{} -Z bindeps", cmd))
-                .masquerade_as_nightly_cargo(),
+                .masquerade_as_nightly_cargo(&["bindeps"]),
         );
         assert(&mut p.cargo(cmd));
     }
@@ -142,7 +142,7 @@ fn check_with_invalid_target_triple() {
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains(
             r#"[..]Could not find specification for target "unknown-target-triple"[..]"#,
         )
@@ -205,7 +205,7 @@ fn disallow_artifact_and_no_artifact_dep_to_same_package_within_the_same_dep_cat
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr("\
 [WARNING] foo v0.0.0 ([CWD]) ignoring invalid dependency `bar_stable` which is missing a lib target
@@ -311,7 +311,7 @@ fn features_are_unified_among_lib_and_bin_dep_of_same_target() {
         .build();
 
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] d2 v0.0.1 ([CWD]/d2)
@@ -418,7 +418,7 @@ fn features_are_not_unified_among_lib_and_bin_dep_of_different_target() {
         .build();
 
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr_contains(
             "error[E0425]: cannot find function `f2` in crate `d2`\n --> d1/src/main.rs:6:17",
@@ -500,7 +500,7 @@ fn feature_resolution_works_for_cfg_target_specification() {
         .build();
 
     p.cargo("test -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 }
 
@@ -566,7 +566,7 @@ fn build_script_with_bin_artifacts() {
         .file("bar/src/lib.rs", "")
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains("[COMPILING] foo [..]")
         .with_stderr_contains("[COMPILING] bar v0.5.0 ([CWD]/bar)")
         .with_stderr_contains("[FINISHED] dev [unoptimized + debuginfo] target(s) in [..]")
@@ -649,7 +649,7 @@ fn build_script_with_bin_artifact_and_lib_false() {
         )
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr_does_not_contain("[..]sentinel[..]")
         .run();
@@ -690,7 +690,7 @@ fn lib_with_bin_artifact_and_lib_false() {
         )
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr_does_not_contain("[..]sentinel[..]")
         .run();
@@ -748,7 +748,7 @@ fn build_script_with_selected_dashed_bin_artifact_and_lib_true() {
         "#)
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar-baz v0.5.0 ([CWD]/bar)
@@ -845,7 +845,7 @@ fn lib_with_selected_dashed_bin_artifact_and_lib_true() {
         .file("bar/src/lib.rs", "pub fn exists() {}")
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar-baz v0.5.0 ([CWD]/bar)
@@ -894,7 +894,7 @@ fn allow_artifact_and_no_artifact_dep_to_same_package_within_different_dep_categ
         .file("bar/src/lib.rs", "")
         .build();
     p.cargo("test -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains("[COMPILING] bar v0.5.0 ([CWD]/bar)")
         .with_stderr_contains("[FINISHED] test [unoptimized + debuginfo] target(s) in [..]")
         .run();
@@ -933,7 +933,7 @@ fn normal_build_deps_are_picked_up_in_presence_of_an_artifact_build_dep_to_the_s
         .file("bar/src/lib.rs", "pub fn f() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 }
 
@@ -959,7 +959,7 @@ fn disallow_using_example_binaries_as_artifacts() {
         .file("bar/examples/one-example.rs", "fn main() {}")
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr(r#"[ERROR] dependency `bar` in package `foo` requires a `bin:one-example` artifact to be present."#)
         .run();
@@ -1008,7 +1008,7 @@ fn allow_artifact_and_non_artifact_dependency_to_same_crate() {
         .build();
 
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains("[COMPILING] bar [..]")
         .with_stderr_contains("[COMPILING] foo [..]")
         .run();
@@ -1052,7 +1052,7 @@ fn build_script_deps_adopt_specified_target_unconditionally() {
         .build();
 
     p.cargo("check -v -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_does_not_contain(format!(
             "[RUNNING] `rustc --crate-name build_script_build build.rs [..]--target {} [..]",
             target
@@ -1123,7 +1123,7 @@ fn build_script_deps_do_not_allow_multiple_targets_under_different_name_and_same
         .build();
 
     p.cargo("check -v -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr(format!(
             "error: the crate `foo v0.0.0 ([CWD])` depends on crate `bar v0.5.0 ([CWD]/bar)` multiple times with different names",
@@ -1167,7 +1167,7 @@ fn non_build_script_deps_adopt_specified_target_unconditionally() {
         .build();
 
     p.cargo("check -v -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains(format!(
             "[RUNNING] `rustc --crate-name bar bar/src/lib.rs [..]--target {} [..]",
             target
@@ -1225,7 +1225,7 @@ fn no_cross_doctests_works_with_artifacts() {
     let target = rustc_host();
     p.cargo("test -Z bindeps --target")
         .arg(&target)
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(&format!(
             "\
 [COMPILING] bar v0.5.0 ([CWD]/bar)
@@ -1245,7 +1245,7 @@ fn no_cross_doctests_works_with_artifacts() {
     // This should probably be a warning or error.
     p.cargo("test -Z bindeps -v --doc --target")
         .arg(&target)
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains(format!(
             "[COMPILING] bar v0.5.0 ([CWD]/bar)
 [RUNNING] `rustc --crate-name bar bar/src/lib.rs [..]--target {triple} [..]
@@ -1264,7 +1264,7 @@ fn no_cross_doctests_works_with_artifacts() {
     // This tests the library, but does not run the doc tests.
     p.cargo("test -Z bindeps -v --target")
         .arg(&target)
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains(&format!(
             "[FRESH] bar v0.5.0 ([CWD]/bar)
 [COMPILING] foo v0.0.1 ([CWD])
@@ -1310,7 +1310,7 @@ fn build_script_deps_adopts_target_platform_if_target_equals_target() {
     let alternate_target = cross_compile::alternate();
     p.cargo("check -v -Z bindeps --target")
         .arg(alternate_target)
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_does_not_contain(format!(
             "[RUNNING] `rustc --crate-name build_script_build build.rs [..]--target {} [..]",
             alternate_target
@@ -1364,7 +1364,7 @@ fn profile_override_basic() {
         .build();
 
     p.cargo("build -v -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains(
             "[RUNNING] `rustc --crate-name build_script_build [..] -C opt-level=1 [..]`",
         )
@@ -1481,12 +1481,12 @@ fn dependencies_of_dependencies_work_in_artifacts() {
         .file("bar/src/main.rs", r#"fn main() {bar::bar()}"#)
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 
     // cargo tree sees artifacts as the dependency kind they are in and doesn't do anything special with it.
     p.cargo("tree -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stdout(
             "\
 foo v0.0.0 ([CWD])
@@ -1543,7 +1543,7 @@ fn targets_are_picked_up_from_non_workspace_artifact_deps() {
         .build();
 
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 }
 
@@ -1582,7 +1582,7 @@ fn allow_dep_renames_with_multiple_versions() {
         .file("bar/src/main.rs", r#"fn main() {println!("0.5.0")}"#)
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains("[COMPILING] bar [..]")
         .with_stderr_contains("[COMPILING] foo [..]")
         .run();
@@ -1633,7 +1633,7 @@ fn allow_artifact_and_non_artifact_dependency_to_same_crate_if_these_are_not_the
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("build -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar [..]
@@ -1668,7 +1668,7 @@ fn prevent_no_lib_warning_with_artifact_dependencies() {
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
             [COMPILING] bar v0.5.0 ([CWD]/bar)\n\
@@ -1703,7 +1703,7 @@ fn show_no_lib_warning_with_artifact_dependencies_that_have_no_lib_but_lib_true(
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr_contains("[WARNING] foo v0.0.0 ([CWD]) ignoring invalid dependency `bar` which is missing a lib target")
         .with_stderr_contains("[COMPILING] bar v0.5.0 ([CWD]/bar)")
         .with_stderr_contains("[CHECKING] foo [..]")
@@ -1737,7 +1737,7 @@ fn resolver_2_build_dep_without_lib() {
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 }
 
@@ -1765,7 +1765,7 @@ fn check_missing_crate_type_in_package_fails() {
             .file("bar/src/lib.rs", "")
             .build();
         p.cargo("check -Z bindeps")
-            .masquerade_as_nightly_cargo()
+            .masquerade_as_nightly_cargo(&["bindeps"])
             .with_status(101)
             .with_stderr(
                 "[ERROR] dependency `bar` in package `foo` requires a `[..]` artifact to be present.",
@@ -1795,7 +1795,7 @@ fn check_target_equals_target_in_non_build_dependency_errors() {
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("check -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_status(101)
         .with_stderr_contains(
             "  `target = \"target\"` in normal- or dev-dependencies has no effect (bar)",
@@ -1908,7 +1908,7 @@ fn env_vars_and_build_products_for_various_build_targets() {
         .file("bar/src/main.rs", "fn main() {}")
         .build();
     p.cargo("test -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar [..]
@@ -1954,7 +1954,7 @@ fn publish_artifact_dep() {
         .build();
 
     p.cargo("publish -Z bindeps --no-verify --token sekrit")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [UPDATING] [..]
@@ -2067,7 +2067,7 @@ fn doc_lib_true() {
         .build();
 
     p.cargo("doc -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar v0.0.1 ([CWD]/bar)
@@ -2087,7 +2087,7 @@ fn doc_lib_true() {
     assert_eq!(p.glob("target/debug/deps/libbar-*.rmeta").count(), 2);
 
     p.cargo("doc -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .env("CARGO_LOG", "cargo::ops::cargo_rustc::fingerprint")
         .with_stdout("")
         .run();
@@ -2143,7 +2143,7 @@ fn rustdoc_works_on_libs_with_artifacts_and_lib_false() {
         .build();
 
     p.cargo("doc -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_stderr(
             "\
 [COMPILING] bar v0.5.0 ([CWD]/bar)
@@ -2644,6 +2644,6 @@ fn build_script_features_for_shared_dependency() {
         .build();
 
     p.cargo("build -Z bindeps -v")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .run();
 }

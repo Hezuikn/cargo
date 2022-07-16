@@ -940,7 +940,8 @@ fn workspace_metadata_no_deps() {
         .file("baz/src/lib.rs", "")
         .build();
 
-    p.cargo("metadata --no-deps")
+    p.cargo("metadata --no-deps -Z bindeps")
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_json(
             r#"
     {
@@ -1122,7 +1123,7 @@ fn workspace_metadata_with_dependencies_and_resolve() {
         .build();
 
     p.cargo("metadata -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_json(
             r#"
             {
@@ -3688,7 +3689,7 @@ fn workspace_metadata_with_dependencies_no_deps_artifact() {
         .build();
 
     p.cargo("metadata --no-deps -Z bindeps")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps"])
         .with_json(
             r#"
             {
