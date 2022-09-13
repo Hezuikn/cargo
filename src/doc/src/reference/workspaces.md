@@ -80,6 +80,67 @@ authors = ["Alice <a@example.com>", "Bob <b@example.com>"]
 
 ### The `members` and `exclude` fields 
 
+In the `Cargo.toml`, the `[workspace]` table supports the following sections:
+
+* [`[workspace]`](#the-workspace-section) — Defines a workspace.
+  * [`members`](#the-members-and-exclude-fields) — Packages to include in the workspace.
+  * [`exclude`](#the-members-and-exclude-fields) — Packages to exclude from the workspace.
+  * [`default-members`](#the-default-members-field) — Packages to operate on when a specific package wasn't selected.
+  * [`metadata`](#the-metadata-table) — Extra settings for external tools.
+  * [`package`](#the-package-table) — Keys for inheriting in packages.
+  * [`dependencies`](#the-dependencies-table) — Keys for inheriting in package dependencies.
+
+### The `[workspace]` section
+
+To create a workspace, you add the `[workspace]` table to a `Cargo.toml`:
+```toml
+[workspace]
+# ...
+```
+
+At minimum, a workspace has to have a member, either with a root package or as
+a virtual manifest.
+
+#### Root package
+
+If the [`[workspace]` section](#the-workspace-section) is added to a
+`Cargo.toml` that already defines a `[package]`, the package is
+the *root package* of the workspace. The *workspace root* is the directory
+where the workspace's `Cargo.toml` is located.
+
+```toml
+[workspace]
+
+[package]
+name = "hello_world" # the name of the package
+version = "0.1.0"    # the current version, obeying semver
+authors = ["Alice <a@example.com>", "Bob <b@example.com>"]
+```
+
+<a id="virtual-manifest"></a>
+#### Virtual workspace
+
+Alternatively, a `Cargo.toml` file can be created with a `[workspace]` section
+but without a [`[package]` section][package]. This is called a *virtual
+manifest*. This is typically useful when there isn't a "primary" package, or
+you want to keep all the packages organized in separate directories.
+
+```toml
+# [PROJECT_DIR]/Cargo.toml
+[workspace]
+members = ["hello_world"]
+```
+
+```toml
+# [PROJECT_DIR]/hello_world/Cargo.toml
+[package]
+name = "hello_world" # the name of the package
+version = "0.1.0"    # the current version, obeying semver
+authors = ["Alice <a@example.com>", "Bob <b@example.com>"]
+```
+
+### The `members` and `exclude` fields 
+
 The `members` and `exclude` fields define which packages are members of
 the workspace:
 
@@ -239,7 +300,7 @@ external tools may wish to use them in a consistent fashion, such as referring
 to the data in `workspace.metadata` if data is missing from `package.metadata`,
 if that makes sense for the tool in question.
 
-### The `workspace.package` table
+### The `package` table
 
 The `workspace.package` table is where you define keys that can be
 inherited by members of a workspace. These keys can be inherited by
@@ -284,7 +345,7 @@ description.workspace = true
 documentation.workspace = true
 ```
 
-### The `workspace.dependencies` table
+### The `dependencies` table
 
 The `workspace.dependencies` table is where you define dependencies to be
 inherited by members of a workspace.
