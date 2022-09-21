@@ -540,6 +540,9 @@ pub enum ProfileRoot {
 /// Profile settings used to determine which compiler flags to use for a
 /// target.
 #[derive(Clone, Eq, PartialOrd, Ord, serde::Serialize, derivative::Derivative)]
+/// Don't compare/hash fields which wont affect compilation.
+/// This is necessary for `Unit` deduplication for things like "test" and
+/// "dev" which are essentially the same.
 #[derivative(Hash, PartialEq)]
 pub struct Profile {
     #[derivative(Hash = "ignore", PartialEq = "ignore")]
