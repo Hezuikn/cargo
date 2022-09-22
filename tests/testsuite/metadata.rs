@@ -4002,7 +4002,7 @@ fn workspace_metadata_with_dependencies_and_resolve_multidep() {
         .build();
 
     p.cargo("metadata -Z bindeps -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps", "multidep"])
         .with_json(
             r#"
             {

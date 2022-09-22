@@ -1417,7 +1417,7 @@ fn profile_override_basic_multidep() {
         .build();
 
     p.cargo("build -v -Z bindeps -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps", "multidep"])
         .with_stderr_contains(
             "[RUNNING] `rustc --crate-name build_script_build [..] -C opt-level=1 [..]`",
         )
@@ -2244,7 +2244,7 @@ fn lib_artifacts_do_not_leak_when_same_package_gets_renamed() {
         .build();
 
     p.cargo("check -v -Z bindeps -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps", "multidep"])
         .with_status(101)
         .with_stderr_contains("error[E0463]: can't find crate for `bar_alternate`")
         .run();
@@ -2349,7 +2349,7 @@ fn multiple_bin_artifacts_with_different_names_and_different_targets() {
         .build();
 
     p.cargo("check -v -Z bindeps -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["bindeps", "multidep"])
         .with_stderr_does_not_contain(format!(
             "[RUNNING] `rustc --crate-name build_script_build build.rs [..]--target {} [..]",
             target
@@ -2468,7 +2468,7 @@ fn different_names_to_the_same_crate_in_different_dep_kinds_with_multidep_toggle
         .build();
 
     p.cargo("test -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["multidep"])
         .run();
 }
 
@@ -2499,7 +2499,7 @@ fn different_dep_names_to_the_same_crate_in_different_categories_do_not_leak_wit
         .build();
 
     p.cargo("test -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["multidep"])
         .with_status(101)
         .with_stderr_contains("[..] can't find crate for `bar_again`")
         .with_stderr_contains(" --> src/lib.rs:1:1")
@@ -2529,7 +2529,7 @@ fn deps_allow_renaming_the_same_resolved_version_with_multidep_toggle() {
         .build();
 
     p.cargo("check -Z multidep")
-        .masquerade_as_nightly_cargo()
+        .masquerade_as_nightly_cargo(&["multidep"])
         .with_stderr(
             "\
 [CHECKING] bar [..]

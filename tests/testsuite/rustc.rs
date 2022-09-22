@@ -135,20 +135,6 @@ fn fails_with_args_to_all_binaries() {
 }
 
 #[cargo_test]
-fn fails_with_crate_type_and_without_unstable_options() {
-    let p = project().file("src/lib.rs", r#" "#).build();
-
-    p.cargo("rustc --crate-type lib")
-        .masquerade_as_nightly_cargo(&["crate-type"])
-        .with_status(101)
-        .with_stderr(
-            "[ERROR] the `crate-type` flag is unstable, pass `-Z unstable-options` to enable it
-See https://github.com/rust-lang/cargo/issues/10083 for more information about the `crate-type` flag.",
-        )
-        .run();
-}
-
-#[cargo_test]
 fn fails_with_crate_type_to_multi_binaries() {
     let p = project()
         .file("src/bin/foo.rs", "fn main() {}")
