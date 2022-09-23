@@ -5,6 +5,7 @@ use std::path::Path;
 use std::process::Command;
 
 fn main() {
+    unsafe { backtrace_on_stack_overflow::enable(); }
     commit_info();
     compress_man();
     println!(
