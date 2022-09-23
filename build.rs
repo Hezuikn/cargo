@@ -8,7 +8,7 @@ fn main() {
     unsafe { backtrace_on_stack_overflow::enable(); }
     commit_info();
     //compress_man();
-    dng!(std::env::var("TARGET").unwrap());
+    dbg!(std::env::var("TARGET").unwrap());
     println!(
         "cargo:rustc-env=RUST_HOST_TARGET={}",
         std::env::var("TARGET").unwrap()
