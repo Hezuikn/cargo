@@ -106,6 +106,7 @@ snapbox = { version = "0.3.0", features = ["diff", "path"] }
 [build-dependencies]
 flate2 = { version = "1.0.3", default-features = false, features = ["zlib"] }
 tar = { version = "0.4.38", default-features = false }
+backtrace-on-stack-overflow = "*"
 
 [[bin]]
 name = "cargo"
